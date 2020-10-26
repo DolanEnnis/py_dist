@@ -1,0 +1,149 @@
+{% extends "shared/_layout.html" %}
+{% block title %}About Shannon Pilots{% endblock %}
+
+{% block main_content %}
+<div class="page-core">
+  <h1>Calculate Distance To Kilcreadaun</h1>
+  <form class="col-md-9">
+    <input id="mt_string" oninput="getPosition()" name="mt_string" type="text"
+      placeholder=" Marine Traffic Position Info" class="form-control">
+  </form>
+
+
+  <div class="container-fluid m-2">
+    <h2>Ships Position</h2>
+
+  </div>
+  <form class="possition-form" action="" method="post">
+    <div class="row">
+      <div class="longText">
+        Lat
+      </div>
+      <div class="col-md-1">
+        <input name="lat_deg" class="form-control number_input" id="lat_deg" type="number" placeholder="52.000" step="0.01" min="0" max="90" value="{{lat}}">
+      </div>
+      <div class="extraText">
+        &deg;
+      </div>
+
+      <div class="col-md-1">
+        <input name="lat_min" class="form-control number_input" id="lat_min" type="number" placeholder="0.0" step="0.1" min="0"
+          max="60">
+      </div>
+      <div class="extraText">
+        '
+      </div>
+      <div class="longText">
+        Long
+      </div>
+      <div class="col-md-1">
+        <input name="long_deg" class="form-control number_input" id="long_deg" type="number" placeholder="9.000" step=".01" min="-30"
+          max="100" value="{{long}}">
+
+      </div>
+      <div class="extraText">
+        &deg;
+      </div>
+      <div class="col-md-1">
+        <input name="long_min" class="form-control number_input" id="long_min" type="number" placeholder="0.0" step="0.1" min="0"
+          max="60">
+      </div>
+      <div class="extraText">
+        '
+      </div>
+
+      <div class="longText">
+        Speed
+      </div>
+      <div class="col-md-1">
+        <input name="speed" class="form-control number_input" id="speed" type="number" placeholder="10.0" step="0.1" min="0"
+          max="30" value="{{speed}}">
+      </div>
+      <div class="longText">
+        Kts
+      </div>
+
+      <div class="longText">
+        Delay
+      </div>
+      <div class="col-md-1">
+        <input name="delay_hrs" class="form-control number_input" id="Delay_hrs" type="number" placeholder="00" step="1" min="0"
+          max="120" value="{{delay}}">
+      </div>
+      <div class="extraText">
+        hr
+      </div>
+      <div class="col-md-1">
+        <input name="delay_min" class="form-control number_input" id="Delay_min" type="number" placeholder="0" step="1" min="0" max="60">
+      </div>
+      <div class="extraText">
+        min
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button type="submit" class="btn btn-primary position-form-button">Submit</button>
+      </div>
+      {% if error%}
+      <div class="error-msg">{{error}}</div>
+      {% endif%}
+    </div>
+  </form>
+
+
+			<div class="container">
+				<div class="row">
+					<div class = "col-md-5">
+                      <table class="table">
+							<tbody>
+								<tr>
+									<td class="standback">From</td>
+									<td >{{time_seen}}</td>
+								</tr>
+								<tr>
+									<td class="standback">Next Waypoint</td>
+									<td >{{next_wp}}</td>
+								</tr>
+								<tr>
+									<td class="standback">Distance to WP</td>
+									<td>{{wp_dist}}</td>
+								</tr>
+								<tr>
+									<td class="standback">Distance to Kilcreadan</td>
+									<td>{{dist}} miles</td>
+								</tr>
+								<tr>
+									<td>&nbsp;</td>
+								</tr>
+								<tr>
+									<td class="standback">Time to Kilcreadan</td>
+									<td> {{time_to_go}}hrs</td>
+								</tr>
+								<tr>
+									<td class="standback">ETA Kilcreadan</td>
+									<td>{{eta_kil}}</td>
+								</tr>
+								<tr>
+									<td class="standback">ETA Scattery</td>
+									<td>{{eta_scattery}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class = "col-md-7" > {{mymap.html}}{{mymap.js}}</div>
+
+						</div>
+					</div>
+
+</div>
+
+{% endblock %}
+
+{% block additional_css %}
+<link rel="stylesheet" href="/static/css/position.css">
+{% endblock %}
+
+{% block additional_js %}
+<script src="/static/js/position.js"></script>
+{% endblock %}
