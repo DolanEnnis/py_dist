@@ -22,11 +22,13 @@ def position_get():
         zoom=7,
         style="height:500px;width:100%;margin:0;"
     )
+
     return {
         'lat': 52.57,
         'long': 9.69,
         'speed': 10,
         "mymap": mymap,
+        'next_wp': position_services.next_wp(52.97, 9.69, waypoints.get_waypoints())
     }
 
 
@@ -53,7 +55,7 @@ def position_post():
         'speed': speed,
         'time_seen': time_seen.strftime("%H:%M %a"),
         'dist': str(round(dist, 1)),
-        'next_wp': next_wp.name,
+        'next_wp': next_wp,
         'wp_dist': str(round(wp_dist, 1)),
         'time_to_go': str(round(time_to_go, 2)),
         'eta_kil': eta_kil.strftime("%H:%M %a"),

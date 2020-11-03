@@ -57,7 +57,7 @@ def null_to_zero(my_string):
 
 def get_map(lat, long, waypoints):
     circle = [{  # draw circles on map for each waypoint
-        'stroke_color': '#030303' ,
+        'stroke_color': '#030303',
         'stroke_opacity': .5,
         'stroke_weight': 5,
         # line(stroke) style
@@ -68,8 +68,9 @@ def get_map(lat, long, waypoints):
             'lat': loc.lat,
             'lng': loc.longtit,
         },
-        'radius': get_wp_radius(loc.distToKil) # circle size (50 meters)
+        'radius': get_wp_radius(loc.distToKil)  # circle size (50 meters)
     } for loc in waypoints]
+
     map = Map(
         identifier="view-side",
         lat=52.55333,
@@ -93,7 +94,7 @@ def get_map(lat, long, waypoints):
 
         ],
         fit_markers_to_bounds=True,
-        circles=circle  # pass circles
+        circles=circle,  # pass circles
     )
     return map
 

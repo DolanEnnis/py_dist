@@ -102,7 +102,7 @@
 								</tr>
 								<tr>
 									<td class="standback">Next Waypoint</td>
-									<td >{{next_wp}}</td>
+									<td >{{next_wp.name}}</td>
 								</tr>
 								<tr>
 									<td class="standback">Distance to WP</td>
@@ -131,7 +131,7 @@
 						</table>
 					</div>
 
-					<div class = "col-md-7" > {{mymap.html}}{{mymap.js}}</div>
+					<div class = "col-md-7" onmouseover="mapFunction()"> {{mymap.html}}{{mymap.js}}</div>
 
 						</div>
 					</div>
@@ -145,5 +145,8 @@
 {% endblock %}
 
 {% block additional_js %}
+<script>var next_wp_lat = {{next_wp.lat}};
+    var next_wp_long = {{next_wp.longtit}}
+</script>
 <script src="/static/js/position.js"></script>
 {% endblock %}
