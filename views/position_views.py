@@ -1,12 +1,13 @@
 import flask
-from flask_googlemaps import GoogleMaps
-from flask_googlemaps import Map
+# from flask_googlemaps import GoogleMaps
+# from flask_googlemaps import Map
 
 from datetime import timedelta
 from infrastructure.view_modifiers import response
 from services import position_services
 from data import waypoints
-from viewmodels.position.position_viewmodel import PositionViewModel
+
+# from viewmodels.position.position_viewmodel import PositionViewModel
 
 blueprint = flask.Blueprint('position', __name__, template_folder='templates')
 
@@ -14,21 +15,12 @@ blueprint = flask.Blueprint('position', __name__, template_folder='templates')
 @blueprint.route('/position/', methods=['GET'])
 @response(template_file='position.html')
 def position_get():
-    vm = PositionViewModel()
-    mymap = Map(
-        identifier="view-side",
-        lat=52.55333,
-        lng=-9.71667,
-        zoom=7,
-        style="height:500px;width:100%;margin:0;"
-    )
-
     return {
         'lat': 52.57,
         'long': 9.69,
         'speed': 10,
-        "mymap": mymap,
-        'next_wp': position_services.next_wp(52.97, 9.69, waypoints.get_waypoints())
+        'waypoints': waypoints.get_waypoints()
+
     }
 
 
@@ -46,7 +38,7 @@ def position_post():
     time_to_go = dist / speed
     eta_kil = time_seen + timedelta(hours=time_to_go)
     eta_scattery = time_seen + timedelta(hours=time_to_go + 7.6 / speed)
-    mymap = position_services.get_map(lat,long, waypoints.get_waypoints())
+    mymap = position_services.get_map(lat, long, waypoints.get_waypoints())
 
     return {
         "mymap": mymap,

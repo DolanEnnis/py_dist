@@ -14,7 +14,8 @@
     <h2>Ships Position</h2>
 
   </div>
-  <form class="possition-form" action="" method="post">
+  <div class="container">
+  <form class="position-form" id="myForm">
     <div class="row">
       <div class="longText">
         Lat
@@ -80,15 +81,14 @@
         min
       </div>
     </div>
-    <div class="row">
-      <div class="col">
-        <button type="submit" class="btn btn-primary position-form-button">Submit</button>
-      </div>
-      {% if error%}
-      <div class="error-msg">{{error}}</div>
-      {% endif%}
-    </div>
+<!--      Submit button outside form so it is not submitted but dealt with in position.js-->
   </form>
+<div class="row">
+  <div class="col">
+      <button class="btn btn-primary position-form-button" onclick="main()">Submit</button>
+  </div>
+    </div>
+</div>
 
 
 			<div class="container">
@@ -102,36 +102,36 @@
 								</tr>
 								<tr>
 									<td class="standback">Next Waypoint</td>
-									<td >{{next_wp.name}}</td>
+									<td ></td>
 								</tr>
 								<tr>
 									<td class="standback">Distance to WP</td>
-									<td>{{wp_dist}}</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td class="standback">Distance to Kilcreadan</td>
-									<td>{{dist}} miles</td>
+									<td> miles</td>
 								</tr>
 								<tr>
 									<td>&nbsp;</td>
 								</tr>
 								<tr>
 									<td class="standback">Time to Kilcreadan</td>
-									<td> {{time_to_go}}hrs</td>
+									<td> hrs</td>
 								</tr>
 								<tr>
 									<td class="standback">ETA Kilcreadan</td>
-									<td>{{eta_kil}}</td>
+									<td></td>
 								</tr>
 								<tr>
 									<td class="standback">ETA Scattery</td>
-									<td>{{eta_scattery}}</td>
+									<td></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 
-					<div class = "col-md-7" onmouseover="mapFunction()"> {{mymap.html}}{{mymap.js}}</div>
+					<div class = "col-md-7" id="map"> </div>
 
 						</div>
 					</div>
@@ -145,8 +145,11 @@
 {% endblock %}
 
 {% block additional_js %}
-<script>var next_wp_lat = {{next_wp.lat}};
-    var next_wp_long = {{next_wp.longtit}}
-</script>
+<!--
+<script>var waypoints = {{waypoints}};
+</script>-->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDA7XS-zaOCSg-ldJKFzxkYbHhZxO5UyR4&libraries=geometry&callback=initMap">
+    </script>
+
 <script src="/static/js/position.js"></script>
 {% endblock %}
