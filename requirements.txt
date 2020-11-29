@@ -4,3 +4,4 @@ passlib
 geopy
 flask-googlemaps
 Werkzeug~=1.0.1
+Flask-Moment~=0.10.0

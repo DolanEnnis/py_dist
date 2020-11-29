@@ -1,3 +1,14 @@
+moment.locale('en', {
+    calendar : {
+        lastDay : '[Yesterday??? at] H:mm',
+        sameDay : '[Today at] HH:mm',
+        nextDay : '[Tomorrow at] HH:mm',
+        lastWeek : '[last???] dddd [at] HH:mm',
+        nextWeek : 'dddd [at] HH',
+        sameElse : 'L'
+    }
+});
+
 
 var shipData = {
 	lat: 52,
@@ -12,6 +23,7 @@ var output = {
 	dToWP: 0,
 	dToKil: 0,
 	tToKil: 0,
+	tToScat: 0,
 	ETAScattery: "",
 	mrwp: "",
 	lastSeen: new Date(),
@@ -87,12 +99,6 @@ function initMap() {
 	mapWaypoints(waypoints);
     }
 
-function main() {
-console.log("We are getting there!")
-}
-
-
-
 function getPosition() {
     document.getElementById("myForm").reset();
 	var thenum = [0, 0, 0];
@@ -119,11 +125,114 @@ function getPosition() {
 	document.getElementById("speed").defaultValue = shipData.speed;
 }
 
+
+function main() {
+    document.getElementById("mtinfo").reset();
+    const delay_hr = document.getElementById("Delay_hrs").value
+    const delay_min = document.getElementById("Delay_min").value
+    output.lastSeen = moment().subtract(delay_hr, 'h').subtract(delay_min, 'm')
+    shipData.lat = document.getElementById("lat_deg").value/1 + ((document.getElementById("lat_min").value) / 60);
+    shipData.longitude = document.getElementById("long_deg").value/1 + ((document.getElementById("long_min").value) / 60);
+    shipData.speed = document.getElementById("speed").value/1
+     // Show ship on map
+    var shipPos = new google.maps.LatLng(shipData.lat, -shipData.longitude);
+	var markerOptions = {
+		position: shipPos
+	};
+	var marker = new google.maps.Marker(markerOptions);
+	marker.setMap(map);
+	// change zoom level of map
+	var KilcreadaunPos = new google.maps.LatLng(waypoints[0].lat, waypoints[0].longtit);
+	var bounds = new google.maps.LatLngBounds();
+	bounds.extend(KilcreadaunPos);
+	bounds.extend(shipPos);
+	map.fitBounds(bounds);
+    output.mrwp = nextWP(shipPos, waypoints);
+    mainOutput()
+}
+
+function mainOutput(){
+    console.log(output.mrwp);
+    var shipPos = new google.maps.LatLng(shipData.lat, -shipData.longitude);
+	//get next WP
+	var appropriateWP = pickWP(output.mrwp);
+	// Line from ship to WP
+	//clear old lines
+	for (i = 0; i < line.length; i++) {
+		line[i].setMap(null); //or line[i].setVisible(false);
+	}
+	//draw line from ship to first WP
+	var legCoordinates = [
+		{ lat: appropriateWP.lat, lng: appropriateWP.longtit },
+		shipPos];
+	var firstLeg = new google.maps.Polyline({
+		path: legCoordinates,
+		geodesic: true,
+		strokeColor: '#FF0000',
+		strokeOpacity: 1.0,
+		strokeWeight: 2
+	});
+	line.push(firstLeg);
+	firstLeg.setMap(map);
+    //Workout Dist and time to Kil
+    output.dToWP = distanceInNM(shipPos, appropriateWP);
+	output.dToKil = output.dToWP + appropriateWP.distToKil;
+	output.tToKil = output.dToKil / shipData.speed;
+	output.tToScat = (output.dToKil + 8.8 )/ shipData.speed;
+    output.ETAKil = output.lastSeen.clone().add(output.tToKil, "h")
+    output.ETAScattery = output.lastSeen.clone().add(output.tToScat, "h")
+	updatepage()
+}
+
+function updatepage(){
+    document.getElementById("timeSeen").innerHTML = output.lastSeen.calendar();
+    document.getElementById("WP").innerHTML = output.mrwp.useWaypoint;
+    document.getElementById("WPdist").innerHTML = output.dToWP.toFixed(1).toString() + " miles";
+	document.getElementById("KillDist").innerHTML = output.dToKil.toFixed(1).toString() + " miles";
+	document.getElementById("KillTime").innerHTML = output.tToKil.toFixed(2);
+	document.getElementById("ETAKil").innerHTML = output.ETAKil.calendar();
+	document.getElementById("ScatDist").innerHTML = (output.dToKil +8.8).toFixed(1).toString() + " miles";
+	document.getElementById("ETAScattery").innerHTML = output.ETAScattery.calendar();
+
+}
+
+function pickWP(wp) {
+	for (i = 0; i < waypoints.length; i++) {
+		if (wp.useWaypoint == waypoints[i].name) {
+			return waypoints[i];
+		}
+	}
+	alert("Error");
+}
+
+
+
 function numToDecimal(num) {
 	var num_length = num.toString().length;
 	var numLog = Math.log(num) / Math.LN10;
 	var decLog = (numLog - num_length);
 	return Math.pow(10, decLog);
+}
+
+function nextWP(loc, waypoints) {
+	var nearestDist = 10000000;
+	var nearWP = new waypoint("Nothing Near", 0, 0, 10000000, []);
+	for (i = 0; i < waypoints.length; i++) {
+		var point = waypoints[i];
+		var dist = distanceInNM(loc, waypoints[i]);
+		/**var dist = loc.GetDistanceTo(point.lat ,point.longtit );*/
+		if (dist < nearestDist) {
+			nearestDist = dist;
+			nearWP = point;
+		}
+	}
+	return nearWP;
+}
+
+function distanceInNM(loc, waypoint) {
+	var to = new google.maps.LatLng(waypoint.lat, waypoint.longtit);
+	var dist = (google.maps.geometry.spherical.computeDistanceBetween(loc, to)) / 1852;
+	return dist;
 }
 /*
 function mapFunction() {
@@ -181,11 +290,9 @@ function draw_Polyline(){
 		var marker = new google.maps.Marker(markerOptions);
 		marker.setMap(map);
 		// Set up listener so that clicking marker changes MRWP
-
 		marker.addListener('click', function () {
 			var markerPos = this.getPosition();
 			output.mrwp = nextWP(markerPos, waypoints);
-			console.log(output.mrwp);
 			mainOutput();
 		});
 	}
@@ -200,8 +307,10 @@ function dist_to_clicked(latLng, map){
    }*/
 
    /*
-   TODO Any advantage in map being generated in python?
-        todo get site working without reloading page using waypoints hardcoded and javascript
+
+   TODO get site working without reloading page using waypoints hardcoded and javascript
+        todo put event listener on speed box allow auto changes
+
    */
    /*
    TODO on clicking map this will be new WP and calculate Ship to WP and WP to Kilcreadaun
@@ -210,3 +319,4 @@ function dist_to_clicked(latLng, map){
         Todo Clicked position to Kilcreadaun
         Todo Adjust output screen
    */
+

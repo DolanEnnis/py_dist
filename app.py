@@ -3,6 +3,7 @@ import os
 import sys
 import flask
 from flask_googlemaps import GoogleMaps
+from flask_moment import Moment
 import environment
 
 from views import home_views
@@ -10,10 +11,10 @@ from views import home_views
 folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, folder)
 
-
 app = flask.Flask(__name__)
 
 GoogleMaps(app, key=environment.map_key)
+moment = Moment(app)
 
 
 def main():

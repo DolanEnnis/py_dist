@@ -4,7 +4,7 @@
 {% block main_content %}
 <div class="page-core">
   <h1>Calculate Distance To Kilcreadaun</h1>
-  <form class="col-md-9">
+  <form class="col-md-9" id="mtinfo">
     <input id="mt_string" oninput="getPosition()" name="mt_string" type="text"
       placeholder=" Marine Traffic Position Info" class="form-control">
   </form>
@@ -97,36 +97,40 @@
                       <table class="table">
 							<tbody>
 								<tr>
-									<td class="standback">From</td>
-									<td >{{time_seen}}</td>
+									<td class="standback" >From</td>
+									<td id="timeSeen"></td>
+								</tr>
+                                <tr>
+									<td class="standback">ETA Kilcreadan</td>
+									<td id="ETAKil"></td>
+								</tr>
+                                <tr>
+									<td class="standback">ETA Scattery</td>
+									<td id="ETAScattery"></td>
 								</tr>
 								<tr>
 									<td class="standback">Next Waypoint</td>
-									<td ></td>
+									<td id="WP"></td>
 								</tr>
 								<tr>
 									<td class="standback">Distance to WP</td>
-									<td></td>
+									<td id="WPdist"></td>
 								</tr>
 								<tr>
 									<td class="standback">Distance to Kilcreadan</td>
-									<td> miles</td>
+									<td id="KillDist"> miles</td>
 								</tr>
-								<tr>
-									<td>&nbsp;</td>
-								</tr>
+
 								<tr>
 									<td class="standback">Time to Kilcreadan</td>
-									<td> hrs</td>
+									<td id="KillTime"> hrs</td>
 								</tr>
-								<tr>
-									<td class="standback">ETA Kilcreadan</td>
-									<td></td>
+
+                                <tr>
+									<td class="standback">Distance to Scattery</td>
+									<td id="ScatDist"> miles</td>
 								</tr>
-								<tr>
-									<td class="standback">ETA Scattery</td>
-									<td></td>
-								</tr>
+
 							</tbody>
 						</table>
 					</div>
@@ -148,6 +152,8 @@
 <!--
 <script>var waypoints = {{waypoints}};
 </script>-->
+        {{ super() }}
+        {{ moment.include_moment() }}
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDA7XS-zaOCSg-ldJKFzxkYbHhZxO5UyR4&libraries=geometry&callback=initMap">
     </script>
 
